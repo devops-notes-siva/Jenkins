@@ -1,0 +1,93 @@
+Jenkins-terrafoem, 44 video first 30 mnts
+1:20 mnts
+45 video nexus first 15 mnts, 1:10 hrs for terrafrom
+
+Build File
+----------
+Java --> maven --> pom.xml
+Python --> pip --> requirements.txt
+NodeJs --> npm --> package.json
+DotNet --> Nuget --> project.json
+
+our project details like name, verion, description
+dependencies and its versions
+
+JSON Application build :
+----------------------
+1)install nodejs in the server where jenkins job is going to build
+2)nodejs application must conatin "package.json" file to build artifact
+3)once built it will generate "node modules" folder
+4)install "pipeline utility steps" plugin to red version from json files
+5)zip the all required packages
+    crete global varaible using def command
+    read version from pacakge.json file and assign to local varaible
+    pass version value to global variable from local variable
+   zip -r <file_name>.zip * -x <file to exclude> --> build all files
+   zip -r <file_name>.zip */ -x <file to exclude> --> build directories only
+
+
+Nexus setup:
+==========
+URL: https://devopscube.com/how-to-install-latest-sonatype-nexus-3-on-linux/
+1)upgrade yum repos
+2)java required
+3)download nexus repo
+        cd /opt
+        wget https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+        sudo tar -xvf nexus.tar.gz
+        sudo mv nexus-3* nexus
+4)create user nexus
+        sudo adduser nexus
+        sudo chown -R nexus:nexus /app/nexus
+        sudo chown -R nexus:nexus /app/sonatype-work
+5)Open /app/nexus/bin/nexus.rc file
+        run_as_user="nexus"
+ default nexus data directory will be set to /app/sonatype-work/nexus3
+ change the data directory -Dkaraf.data parameter to a preferred location
+
+ You can find the default admin password in /app/sonatype-work/nexus3/admin.password
+
+ In organizations maven central repos,... will be maintained here 
+
+to identify artifacts with unique names:
+--------------------------
+maven type artifacts
+----------------------
+first name
+last name
+PAN/aadhar number
+we have different projects in the world, projects have components/modules inside. components/modules/applications have different version inside.
+group id, artifact id, version
+ex:
+com.expense --> group id
+backend --> artifact id(build file/zip file of app)
+1.0.0 --> version
+
+Nexus working:
+--------------
+1) create repo in nexus
+2) copu url of repo creted in nexus(http://192.168.56.114:8081/repository/backend/)
+3)in jenkins server install plugin "nexus artifcat uploader"
+
+
+Jenkins have the application version, it should pass version to terraform, terraform should create EC2 instance and pass app version to ansible
+ansible should download that package from nexus, configure the EC2
+
+group --> what are the packages used in company, will be here
+hosted --> your repos
+disable
+--------------
+proxy --> first they check here, if not available they will get from internet, keep it in local
+
+
+
+
+learnings:
+==================
+++++++++++++++++++
+node js app build
+nexus installtion and setup
+downstaream pipeline job
+
+++++++++++++++++++
+=====================

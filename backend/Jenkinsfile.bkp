@@ -1,0 +1,118 @@
+pipeline {
+    agent {
+        label 'OWN-1'
+    }
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+        disableConcurrentBuilds()
+        //ansiColor('xterm')
+    }
+    parameters{
+        booleanParam(name: 'deploy', defaultValue: false, description: 'Toggle this value')
+    }
+    environment{
+        def appVersion = '' //variable declaration
+        nexusUrl = '192.168.56.114:8081/repository/backend'
+         GIT_HTTP_MAX_REQUEST_BUFFER = '524288000'
+        }
+    stages {
+        stage('Setup') {
+            steps {
+                sh 'git config --global http.postBuffer ${GIT_HTTP_MAX_REQUEST_BUFFER}'
+            }
+        }
+        stage('Checkout') {
+            steps {
+                script {
+                    retry(3) {
+                        checkout scm
+                    }
+                }
+            }
+        }
+        
+        stage('read the version') {
+            steps{
+                
+                script{
+                 // Change to the correct directory and read the package.json file
+                    dir('DevOps_Assets/Jenkins/backend') {
+                   
+                    def packageJson = readJSON file: 'package.json'
+                    appVersion = packageJson.version
+                    echo "application version: ${appVersion}"
+                    }
+                }
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                dir('DevOps_Assets/Jenkins/backend') {
+               sh """
+                npm install
+                ls -ltr
+                echo "application version: ${appVersion}"
+               """
+                }
+            }
+        }
+        stage('Build'){
+            
+            steps{
+                    dir('DevOps_Assets/Jenkins/backend') {
+                sh """
+                zip -q -r backend-${appVersion}.zip * -x Jenkinsfile -x backend-${appVersion}.zip
+                ls -ltr
+                """
+            }
+            }
+        }
+
+        stage('NexusUload'){
+            steps { 
+            dir('DevOps_Assets/Jenkins/backend') {
+            script {
+                
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: "${nexusUrl}",
+                    groupId: 'com.expense',
+                    version: "${appVersion}",
+                    repository: "backend",
+                    credentialsId: 'nexus-auth',
+                    artifacts: [
+                        [artifactId: "expbackend",
+                        classifier: '',
+                        file: "backend-" + "${appVersion}" + '.zip',
+                        type: 'zip']
+                    ]
+                )
+                }
+            }
+            }
+        }
+        stage('Downstream Job') {
+        steps{
+                script{
+                    def params = [
+                        string(name: 'appVersion', value: "${appVersion}")
+                    ]
+                    build job: 'backend-deploy', parameters: params, wait: false
+                }
+            }
+        }
+    }
+    post { 
+        always { 
+            echo 'I will always say Hello again!'
+            deleteDir()
+        }
+        success { 
+            echo 'I will run when pipeline is success'
+        }
+        failure { 
+            echo 'I will run when pipeline is failure'
+        }
+    }
+}
