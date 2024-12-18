@@ -36,7 +36,7 @@ pipeline {
                 
                 script{
                  // Change to the correct directory and read the package.json file
-                    dir('DevOps_Assets/Jenkins/backend') {
+                    dir('backend') {
                    
                     def packageJson = readJSON file: 'package.json'
                     appVersion = packageJson.version
@@ -47,7 +47,7 @@ pipeline {
         }
         stage('Install Dependencies') {
             steps {
-                dir('DevOps_Assets/Jenkins/backend') {
+                dir('backend') {
                sh """
                 npm install
                 ls -ltr
@@ -59,7 +59,7 @@ pipeline {
         stage('Build'){
             
             steps{
-                    dir('DevOps_Assets/Jenkins/backend') {
+                    dir('backend') {
                 sh """
                 zip -q -r backend-${appVersion}.zip * -x Jenkinsfile -x backend-${appVersion}.zip
                 ls -ltr
@@ -70,7 +70,7 @@ pipeline {
 
         stage('NexusUload'){
             steps { 
-            dir('DevOps_Assets/Jenkins/backend') {
+            dir('backend') {
             script {
                 
                 nexusArtifactUploader(
