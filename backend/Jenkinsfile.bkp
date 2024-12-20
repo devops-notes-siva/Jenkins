@@ -56,17 +56,6 @@ pipeline {
                 }
             }
         }
-        stage('Build'){
-            
-            steps{
-                    dir('backend') {
-                sh """
-                zip -q -r backend-${appVersion}.zip * -x Jenkinsfile -x backend-${appVersion}.zip
-                ls -ltr
-                """
-            }
-            }
-        }
 
         stage('Sonar Scan'){
             environment {
@@ -80,6 +69,19 @@ pipeline {
                 }
             }
         }
+        stage('Build'){
+            
+            steps{
+                    dir('backend') {
+                sh """
+                zip -q -r backend-${appVersion}.zip * -x Jenkinsfile -x backend-${appVersion}.zip
+                ls -ltr
+                """
+            }
+            }
+        }
+
+        
 
 
         stage('NexusUload'){
