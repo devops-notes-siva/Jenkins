@@ -38,6 +38,8 @@ pipeline stage view:: need to install to view stages
 Ansicolor:: to see colors in console output
 pipeline utility steps:: reads versions of json files,zipping of files
 nexus artifcat uploader
+rebuild
+sonarqube scanner 
 
 Jenkins- Pipeline Synatx:
 ---------------

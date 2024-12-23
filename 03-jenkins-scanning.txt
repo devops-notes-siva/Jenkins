@@ -1,0 +1,80 @@
+46 session video, 10:00 to last
+
+ unit testing
+unit testing is about testing the functions, which are basic blocks of programming. Only developers has to do unit testing...
+
+scanning:
+---
+coding standars --> dev, qa, uat
+Static source code analysis --> scan the code, give some recommendations
+you must apply the recommendations to pass
+
+security:
+---------
+SAST --> security related things, analysis will be given to developers they have to fix
+DAST --> dynamic security
+Open source libraries scan --> libraries scan.. frequently upgrade the libraries
+docker image scan --> 
+now deploy the code to development
+
+then perform functional testing, developers can take care...
+integration testing --> test the entire functionality. this will be performed by QA
+
+Shift left
+-------------
+unit tests
+scans
+	static source code analysis --> simple code scan
+	SAST --> static application security testing --> security scan in the code
+	open source library scan --> scan the dependencies
+        for libra scanning we will setiup in github only
+        repo -> secutity -> code scanning -> confiure -> tools -> codeQL analysis: default -> 
+        depenbot -> scans the dependencies, here vulnarabilities
+	DAST --> real time attack on the application, ttol -> veracode
+	image scan
+Deploy to DEV
+functional tests --> usually by developers, because it is a microservice
+
+overall code, new code
+1 year code = overall code
+5.3.0, 5.4.0
+5.4.0-5.3.0 = new code
+unit test --> functions
+10 functions --> 100% coverage --> unit tests for 10 functions
+80% code should be covered through unit testing
+
+quality gates -> critical ratings, vulnarabilities, duplicate code, security rating
+
+Sonarqube sanner:
+----------------
+- install Sonarqube, sonar server runs on 9000 port
+- install sonar agent in jenkins server, this agent scans the code and share the results to sonar server , from sonar server decision is passed to jenkins server
+
+to setup webhook in sonar server:(need to setup in pipelone also)
+-------------------------------
+administration  -> configure -> web -> name:   -> URL: http://jenkins-url:8080/sonarqube-webhook/
+
+installing sonarqube scanner/agent/cli in jenkins server:
+------------------------------------------------------
+1) plugin -sonarqube scanner , in jenkins server manage jenkins-> toools -> sonarqube scanner
+    mange jenkins -> system ->environmnet variables check -> sonarqube installtion(name should be same as tools), server authentication token(in sonar server -> my account -> security(name: jenkis, type: global))
+
+    mange jenkins -> credentials -> system -> global cred -> new -> secret text -> 
+
+        note: nexus not having agent, it uses curl to post repos 
+
+
+
+
+
+Sonarqube installation:
+================
+URL:  https://blog.devops.dev/how-to-install-sonarqube-on-linux-rhel-centos-57eb5893be
+
+1)java-11 required
+2)install and Setup PostgreSQL 14 Database For SonarQube
+3) Disable the default PostgreSQL module once the repository is added.
+4) Now, install the PostgreSQL 14 database server
+5)Initialize the Postgres database.
+6)....
+
