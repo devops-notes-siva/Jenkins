@@ -1,0 +1,21 @@
+import java.time.LocalDateTime
+import groovy.json.JsonBuilder
+    These imports bring in the necessary Java and Groovy classes to handle date/time and JSON operations.
+    JSON (JavaScript Object Notation) is a lightweight data-interchange format that is easy to read and write for humans and easy to parse and generate for machines. It is widely used for data exchange between web applications and servers.
+def uploadToNexus = false
+def sonarScanner = "/opt/cloudhost/sonar-scanner-3.0.3.778/bin/sonar-scanner"
+    These variables are defined to control whether to upload to Nexus and the path to the SonarQube scanner.
+pipeline {
+    This marks the beginning of the Jenkins pipeline.
+agent { label 'JENKINS-SERVER' }
+    This specifies that the pipeline should run on any available agent labeled 'JENKINS-SERVER'.
+environment {
+    NEXUS_VERSION = "nexus3"
+    NEXUS_PROTOCOL = "http"
+    NEXUS_URL = "localhost:8081" 
+    NEXUS_REPOSITORY = "test-repository"
+    NEXUS_CREDENTIAL_ID = "nexus-credentials"
+}
+    These environment variables are set for configuring the Nexus repository details.
+    Environment Variables: These are global system-level variables that are maintained by the operating system or runtime environment
+    variables: These are user-defined or program-specific variables created within the scope of an application, script, or function.
